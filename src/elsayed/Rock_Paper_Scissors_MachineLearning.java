@@ -32,6 +32,7 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 	 */
 	Image robotImage = new Image("file:resources/robot.png");
 	int counterPick;
+	Text percentText;
 	
 	//these are only accessible by classes in the same folder and are static
 	//i.e they are unchanged for each class
@@ -48,7 +49,17 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 	//game data is the same for each class
 	static String data = "";
 	static double winPercent = 0;
-	static int gamesPlayed = 0;
+	static double gamesPlayed = 0;
+	
+	//definitions based on if the player lost or won
+	public static final int LOST = 0;
+	public static final int WON = 1;
+	public static final int TIE = 2;
+	
+	public static final int ROCK = 0;
+	public static final int PAPER = 1;
+	public static final int SCISSOR = 2;
+	
 	@Override
 	public void start(Stage stage) throws Exception {
 		
@@ -148,11 +159,19 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 		backButton.relocate(20, 440);
 		backButton.setPrefSize(100, 40);
 		
+		//Next Button
 		Button nextButton = new Button("Next");
 		nextButton.setFont(regularFont);
 		nextButton.relocate(430,440);
 		nextButton.setPrefSize(100, 40);
 		nextButton.setDisable(true);
+		
+		//Percent Text
+		readResults();
+		winPercent = readWinPercent();
+		percentText = new Text((double)Math.round(winPercent*100)/100 + "%");
+		percentText.setFont(regularFont);
+		percentText.relocate(250, 370);
 		
 		//Player Choices
 		PlayerChoice userChoice = new PlayerChoice(145, 220);
@@ -172,7 +191,7 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 			scene.setRoot(mainGroup);
 			//reset the game
 			mainGroup.getChildren().clear();
-			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton);
+			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton, percentText);
 			rockButton.setDisable(false);
 			paperButton.setDisable(false);
 			scissorsButton.setDisable(false);
@@ -183,57 +202,71 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 		{
 			scene.setRoot(titleGroup);
 			mainGroup.getChildren().clear();
-			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton);
+			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton, percentText);
 		});
 		
 		rockButton.setOnAction(e -> 
 		{
 			mainGroup.getChildren().clear();
-			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton);
+			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton, percentText);
 			mainGroup.getChildren().add(userChoice.getChoiceImage(0));
+			System.out.println("before magic: " + readWinPercent());
 			counterPick = aiChoice.workMagic();
+			System.out.println("after magic: " + readWinPercent());
 			mainGroup.getChildren().add(aiChoice.getChoiceImage(counterPick));
+			updateWinPercent(winOrLoss(0,counterPick));
+			System.out.println("first percent: " + readWinPercent());
 			rockButton.setDisable(true);
 			paperButton.setDisable(true);
 			scissorsButton.setDisable(true);
 			nextButton.setDisable(false);
 			writeResults(0);
+			System.out.println("second percent: " + readWinPercent());
 		});
 		paperButton.setOnAction(e -> 
 		{
 			mainGroup.getChildren().clear();
-			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton);
+			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton, percentText);
 			mainGroup.getChildren().add(userChoice.getChoiceImage(1));
+			System.out.println("before magic: " + readWinPercent());
 			counterPick = aiChoice.workMagic();
+			System.out.println("after magic: " + readWinPercent());
 			mainGroup.getChildren().add(aiChoice.getChoiceImage(counterPick));
+			updateWinPercent(winOrLoss(1,counterPick));
+			System.out.println("first percent: " + readWinPercent());
 			rockButton.setDisable(true);
 			paperButton.setDisable(true);
 			scissorsButton.setDisable(true);
 			nextButton.setDisable(false);
 			writeResults(1);
+			System.out.println("second percent: " + readWinPercent());
 		});
 		scissorsButton.setOnAction(e -> 
 		{
 			mainGroup.getChildren().clear();
-			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton);
+			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton, percentText);
 			mainGroup.getChildren().add(userChoice.getChoiceImage(2));
+			System.out.println("before magic: " + readWinPercent());
 			counterPick = aiChoice.workMagic();
+			System.out.println("after magic: " + readWinPercent());
 			mainGroup.getChildren().add(aiChoice.getChoiceImage(counterPick));
+			updateWinPercent(winOrLoss(2,counterPick));
+			System.out.println("first percent: " + readWinPercent());
 			rockButton.setDisable(true);
 			paperButton.setDisable(true);
 			scissorsButton.setDisable(true);
 			nextButton.setDisable(false);
 			writeResults(2);
+			System.out.println("second percent: " + readWinPercent());
 		});
 		nextButton.setOnAction(e -> 
 		{
 			mainGroup.getChildren().clear();
-			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton);
+			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton, percentText);
 			rockButton.setDisable(false);
 			paperButton.setDisable(false);
 			scissorsButton.setDisable(false);
 			nextButton.setDisable(true);
-			//TODO, get rid of the AI choice image
 		});
 		
 		//let the show begin
@@ -256,7 +289,7 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 		File gameData = new File("resources/GameData.txt");
 		
 		//reading the file
-		data = readResults()+playerChoice;
+		data = readResults()+playerChoice+"\n"+winPercent+"\n"+gamesPlayed;
 		
 		//writing
 		PrintWriter p;
@@ -278,7 +311,10 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 		//reading the file
 		try {
 			Scanner reader = new Scanner(userData);
-			data = data + reader.nextLine();
+			if (reader.hasNextLine()) {
+				data = data + reader.nextLine();
+			} else
+				data = "";
 			reader.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -289,6 +325,7 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 	/*
 	 * 0 for player loss
 	 * 1 for player win
+	 * 2 for tie
 	 * winPercent is based on how much the player wins
 	 */
 	public void updateWinPercent(int winOrLoss){
@@ -297,33 +334,127 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 		double wins;
 		try {
 			Scanner reader = new Scanner(userData);
-			reader.nextLine();//skip the gameData
-			winPercent = Integer.parseInt(reader.nextLine());
-			gamesPlayed = Integer.parseInt(reader.nextLine());
+			if (reader.hasNextLine()) {
+				reader.nextLine();//skip the gameData
+				String winString = reader.nextLine();
+				String gamesString = reader.nextLine();
+
+				//check if there is no text in the file
+				if (winString.isEmpty() || gamesString.isEmpty()) {
+					winPercent = 0;
+					gamesPlayed = 0;
+				} else {
+					winPercent = Double.parseDouble(winString);
+					gamesPlayed = Double.parseDouble(gamesString);
+				}
+			} else {
+				winPercent = 0;
+				gamesPlayed = 0;
+			}
 			reader.close();
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (gamesPlayed == 0) {
-			if (winOrLoss ==0) {
+		System.out.println("After scanning" + readWinPercent());
+		if (winOrLoss == TIE) {
+			factor = gamesPlayed/100;
+			wins = winPercent*factor;
+			gamesPlayed++;
+			winPercent = (wins/gamesPlayed)*100;
+		}
+		else if (gamesPlayed == 0) {
+			if (winOrLoss ==LOST) {
 				winPercent = 0;
-			} else {
+			} else if (winOrLoss == WON){
 				winPercent = 100;
+			} else {
+				winPercent = 0;
 			}
+			gamesPlayed++;
 		} else {
-			if (winOrLoss == 0) {
+			if (winOrLoss == LOST) {
 				factor = gamesPlayed/100;
 				wins = winPercent*factor;
 				gamesPlayed++;
-				winPercent = wins/gamesPlayed;
+				winPercent = (wins/gamesPlayed)*100;
 			} else {
 				factor = gamesPlayed/100;
 				wins = winPercent*factor;
 				gamesPlayed++;
 				wins++;
-				winPercent = wins/gamesPlayed;
+				winPercent = (wins/gamesPlayed)*100;
 			}
+		}
+		System.out.println(winPercent);
+		percentText.setText((double)Math.round(winPercent*100)/100 + "%");
+		//print writer stuff
+		File gameData = new File("resources/GameData.txt");
+
+		//reading the file
+		data = readResults()+"\n"+winPercent+"\n"+gamesPlayed;
+
+		//writing
+		PrintWriter p;
+		try {
+			p = new PrintWriter(gameData);
+			p.print(data);
+			p.close();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	/*
+	 * returns the win percentage
+	 */
+	public double readWinPercent() {
+		File userData = new File("resources/GameData.txt");
+		try {
+			Scanner reader = new Scanner(userData);
+			if (reader.hasNextLine()) {
+				reader.nextLine();//skip the gameData
+				String winString = reader.nextLine();
+
+				//check if there is no text in the file
+				if (winString.isEmpty()) {
+					winPercent = 0;
+				} else {
+					winPercent = Double.parseDouble(winString);
+				}
+			} else {
+				winPercent = 0;
+			}
+			reader.close();
+			return winPercent;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return 0;
+	}
+	/*
+	 * 0 for rock
+	 * 1 for paper
+	 * 2 for scissors
+	 * This method figures out if the player won or lost
+	 * based on if the player wins or loses
+	 */
+	public int winOrLoss(int player, int ai) {
+		if (player == ROCK && ai == PAPER) {
+			return LOST;
+		} else if (player == PAPER && ai == SCISSOR) {
+			return LOST;
+		} else if (player == SCISSOR && ai == ROCK) {
+			return LOST;
+		} else if (player == ROCK && ai == SCISSOR) {
+			return WON;
+		} else if (player == PAPER && ai == ROCK) {
+			return WON;
+		} else if (player == SCISSOR && ai == PAPER) {
+			return WON;
+		} else {
+			return TIE;
 		}
 	}
 }

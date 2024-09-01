@@ -55,7 +55,6 @@ public class PlayerChoice {
 	}
 	public int workMagic() {
 		String gameData = Rock_Paper_Scissors_MachineLearning.data;
-		
 		//find out the number of each choice
 		int rockCount = 0;
 		int paperCount = 0;
