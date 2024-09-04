@@ -54,52 +54,60 @@ public class PlayerChoice {
 		}
 	}
 	public int workMagic() {
-		String gameData = Rock_Paper_Scissors_MachineLearning.data;
+		String gameData = Rock_Paper_Scissors_MachineLearning.data.split("\n")[0];
 		//find out the number of each choice
 		int rockCount = 0;
 		int paperCount = 0;
 		int scissorCount = 0;
 		int length = gameData.length();
 		int userPick;
+		int curveball;
+		
+		//this is used to pick between rock, paper, or scissors in random situations
 		Random rand = new Random();
 		
 		if (length>=50) {
 			for (int i = 0; i<gameData.length(); i++) {
-				if (gameData.charAt(i)==0) {
+				if (Character.getNumericValue(gameData.charAt(i))==0) {
 					rockCount++;
-				} else if (gameData.charAt(i)==1) {
+				} else if (Character.getNumericValue(gameData.charAt(i))==1) {
 					paperCount++;
 				} else {
 					scissorCount++;
 				}
-			}
-			//calculate most likely pick
-			/*
-			 * lots of different possibilities
-			 * all could have the same number
-			 * rock and paper can be equal (and greater than scissors)
-			 * scissors and paper can be equal
-			 * rock and scissors can be equal
-			 * choice with highest picks gets countered by the AI
-			 * 
-			 */
-			if (rockCount==paperCount && rockCount==scissorCount) {
-				userPick = randomPick();
-			} else if (rockCount == paperCount && rockCount >scissorCount) {
-				userPick = rand.nextInt(1);
-			} else if (scissorCount == paperCount && scissorCount >rockCount) {
-				userPick = rand.nextInt(1) + 1;
-			} else if (rockCount == scissorCount && rockCount >paperCount) {
-				userPick = rand.nextInt(1);
-				userPick = (userPick == 1)? 2: 0;//random now chooses either rock or scissors
-			} else if (rockCount > paperCount && rockCount > scissorCount) {
-				userPick = 0;
-			} else if (paperCount > scissorCount) {
-				userPick = 1;
-			} else {
-				userPick = 2;
-			}
+			}			//Sometimes that A.I will analyze the users moves and sometimes it will randomly pick
 			
+			curveball = rand.nextInt(1);
+			if (curveball == 0) {
+				userPick = randomPick();
+			} else {
+				//calculate most likely pick
+				/*
+				 * lots of different possibilities
+				 * all could have the same number
+				 * rock and paper can be equal (and greater than scissors)
+				 * scissors and paper can be equal
+				 * rock and scissors can be equal
+				 * choice with highest picks gets countered by the AI
+				 * 
+				 */
+				if (rockCount==paperCount && rockCount==scissorCount) {
+					userPick = randomPick();
+				} else if (rockCount == paperCount && rockCount >scissorCount) {
+					userPick = rand.nextInt(1);
+				} else if (scissorCount == paperCount && scissorCount >rockCount) {
+					userPick = rand.nextInt(1) + 1;
+				} else if (rockCount == scissorCount && rockCount >paperCount) {
+					userPick = rand.nextInt(1);
+					userPick = (userPick == 1)? 2: 0;//random now chooses either rock or scissors
+				} else if (rockCount > paperCount && rockCount > scissorCount) {
+					userPick = 0;
+				} else if (paperCount > scissorCount) {
+					userPick = 1;
+				} else {
+					userPick = 2;
+				}
+			}
 		} else {//if there are less than 50 played games then the bot chooses randomly
 			userPick = randomPick();
 			
