@@ -210,54 +210,42 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 			mainGroup.getChildren().clear();
 			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton, percentText);
 			mainGroup.getChildren().add(userChoice.getChoiceImage(0));
-			System.out.println("before magic: " + readWinPercent());
 			counterPick = aiChoice.workMagic();
-			System.out.println("after magic: " + readWinPercent());
 			mainGroup.getChildren().add(aiChoice.getChoiceImage(counterPick));
 			updateWinPercent(winOrLoss(0,counterPick));
-			System.out.println("first percent: " + readWinPercent());
 			rockButton.setDisable(true);
 			paperButton.setDisable(true);
 			scissorsButton.setDisable(true);
 			nextButton.setDisable(false);
 			writeResults(0);
-			System.out.println("second percent: " + readWinPercent());
 		});
 		paperButton.setOnAction(e -> 
 		{
 			mainGroup.getChildren().clear();
 			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton, percentText);
 			mainGroup.getChildren().add(userChoice.getChoiceImage(1));
-			System.out.println("before magic: " + readWinPercent());
 			counterPick = aiChoice.workMagic();
-			System.out.println("after magic: " + readWinPercent());
 			mainGroup.getChildren().add(aiChoice.getChoiceImage(counterPick));
 			updateWinPercent(winOrLoss(1,counterPick));
-			System.out.println("first percent: " + readWinPercent());
 			rockButton.setDisable(true);
 			paperButton.setDisable(true);
 			scissorsButton.setDisable(true);
 			nextButton.setDisable(false);
 			writeResults(1);
-			System.out.println("second percent: " + readWinPercent());
 		});
 		scissorsButton.setOnAction(e -> 
 		{
 			mainGroup.getChildren().clear();
 			mainGroup.getChildren().addAll(rock, rockButton, paper, paperButton, scissors, scissorsButton, robot, backButton, nextButton, percentText);
 			mainGroup.getChildren().add(userChoice.getChoiceImage(2));
-			System.out.println("before magic: " + readWinPercent());
 			counterPick = aiChoice.workMagic();
-			System.out.println("after magic: " + readWinPercent());
 			mainGroup.getChildren().add(aiChoice.getChoiceImage(counterPick));
 			updateWinPercent(winOrLoss(2,counterPick));
-			System.out.println("first percent: " + readWinPercent());
 			rockButton.setDisable(true);
 			paperButton.setDisable(true);
 			scissorsButton.setDisable(true);
 			nextButton.setDisable(false);
 			writeResults(2);
-			System.out.println("second percent: " + readWinPercent());
 		});
 		nextButton.setOnAction(e -> 
 		{
@@ -356,7 +344,6 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("After scanning" + readWinPercent());
 		if (winOrLoss == TIE) {
 			factor = gamesPlayed/100;
 			wins = winPercent*factor;
@@ -386,7 +373,6 @@ public class Rock_Paper_Scissors_MachineLearning extends Application {
 				winPercent = (wins/gamesPlayed)*100;
 			}
 		}
-		System.out.println(winPercent);
 		percentText.setText((double)Math.round(winPercent*100)/100 + "%");
 		//print writer stuff
 		File gameData = new File("resources/GameData.txt");
